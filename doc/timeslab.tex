@@ -1,0 +1,1407 @@
+\baselineskip=14pt
+\font\ffour=cmr10 scaled\magstep4
+\font\ftwo=cmr10 scaled\magstep2
+\font\fhalf=cmr10 scaled\magstephalf
+\font\ithalf=cmti10 scaled\magstephalf
+\font\ttone=cmtt10 scaled\magstephalf
+\font\bftwo=cmbx10 scaled\magstep2
+\def\tsl#1{{\tt#1}}
+
+% For bold mathematical symbols:
+%
+\font\tenmibf=cmmib10
+\font\eightmibf=cmmib10 scaled 800
+\font\sixmibf=cmmib10 scaled 600
+\newfam\mibffam
+\skewchar\tenmibf='177
+\skewchar\eightmibf='177
+\skewchar\sixmibf='177
+\def\tenptbf{
+\def\bf{\fam\bffam\tenmibf} \textfont\mibffam=\tenmibf
+\scriptfont\mibffam=\eightmibf \scriptscriptfont\mibffam=\sixmibf}
+\tenptbf
+\mathchardef\Valpha="080B
+\mathchardef\Vbeta="080C
+%
+%
+
+\def\sechd#1{\vskip 4mm\noindent{\bftwo#1}\vskip 4mm}
+{\ffour 
+\centerline{Doing TIMESLAB in S}
+}
+{\ftwo
+\vskip 6mm\centerline{H. Joseph Newton and Jane Harvill}\vskip 2mm
+\centerline{Department of Statistics, Texas A \& M University}\vskip 4mm
+\centerline{Ported to R by:}\vskip 2mm
+\centerline{Bernd Johannes Wuebben} \vskip 2mm
+\centerline{Department of Mathematics, Cornell University}
+\centerline{\tt <wuebben@math.cornell.edu> \rm}
+}
+\vskip 10mm
+\fhalf
+\sechd{1. Introduction}
+TIMESLAB (see Newton (1988)) is an interactive, graphical oriented, command
+driven language for studying and analyzing univariate and bivariate linear
+time series in the time and frequency domain. It is written to obtain
+maximum performance from the IBM PC family of computers. Thus it is very
+difficult to port to other computer platforms. The S language (see
+Becker, et. al. (1988)) is also an interactive, graphics oriented command
+driven language.
+It is designed to run on a wide variety of Unix workstations and 
+contains a large number of
+input/output, mathematical, and graphics routines. Unfortunately, it
+only has a few time series functions. Since S is
+extensible (a new version can be created by the user that incorporate
+Fortran or C functions that they have written), one way to transport the
+{\ithalf abilities} of TIMESLAB is to embed it in S. Thus we have created
+a set of S functions that correspond to the commands in TIMESLAB.
+
+In Section 2, we describe the files that are distributed with the add-on
+library and discuss what must be done to make them part of S.
+Section 3 is a dictionary of the S functions.
+This dictionary is designed to be in the same format as that in 
+Appendix 1 of the S book. Finally, Section 4 contains a table of 
+cross-references between TIMESLAB commands and the equivalent S functions.
+We also list a variety of other S functions that are included in the
+distribution. These functions include analogs of some of the TIMESLAB 
+macros as well as some other functions that I have developed.
+
+\sechd{2. Incorporating the New Functions into S}
+
+The new functions are distributed in two files; one contains a large
+number of S functions while the other contains a number of fortran
+subprograms. In order to use these functions, a user must 1) use the
+S \tsl{source} function and 2) compile and dynamically load the fortran.
+The table in Section 4 describes which of the S functions use fortran.
+
+
+\sechd{3. Dictionary of S Functions for Time Series}
+
+\def\tsl#1{{\ttone#1}}
+\def\boxit#1#2#3{\vbox{\hrule\hbox{\vrule\kern#3
+      \vbox{\kern#3\vbox{\hsize #1\noindent\strut {#2}\strut}
+      \kern#3}\kern#3\vrule}\hrule}}
+\def\Sitem#1{\par\indent\hbox to 55pt{{\hfil\ttone#1}}
+   \hangindent=92pt\hangafter=1 \hskip 10pt}
+\def\Shead#1#2{\vskip 4mm\centerline{\boxit{\hsize}{{\ \ \ 
+              {\ttone #1}\hfill#2\hfill {\ttone #1}\ \ \ }}{10pt}}}
+\def\Scall#1{\vskip 4mm\hskip 40pt{\ttone#1}}
+
+\def\Sarg{\vskip 4mm\noindent ARGUMENTS}
+
+\def\Sval{\vskip 4mm\noindent VALUE}
+
+\def\Sref{\vskip 4mm\noindent REFERENCE}
+
+\def\Ssee{\vskip 4mm\noindent SEE ALSO}
+%
+%
+\Shead{acf}{Calculate Sample Autocorrelation Function}
+
+\Scall{acf(x,m=0)}
+
+\Sarg
+\Sitem{x} A time series.
+\Sitem{m} The number of lags at which to find the acf.
+
+\Sval
+\Sitem{ } \tsl{acf} returns a list containing two elements:
+\Sitem{corr} A vector containing the autocorrelations.
+\Sitem{var} A scalar containing the sample variance.
+%
+%
+\Shead{acf1}{Calculate Sample Autocorrelation Function}
+
+\Scall{acf1(x,m=0)}
+\Sarg
+\Sitem{x} A time series.
+\Sitem{m} The number of lags at which to find the autocovariance 
+function.
+
+\Sval
+\Sitem{ } \tsl{acf1} returns a list containing two elements:
+\Sitem{corr} A vector containing the autocorrelations.
+\Sitem{var} A scalar containing the sample variance.
+%
+%
+\Shead{arcorr}{Calculate AR Autocorrelation Function}
+
+\Scall{arcorr(alpha,rvar=1,m=0)}
+
+\Sarg
+\Sitem{alpha} Array containing AR coefficients $\Valpha$.
+\Sitem{rvar} Real scalar containing error variance $\sigma^2(>0)$.
+\Sitem{m} Integer containing the number of autocorrelations to
+calculate $(\ge0)$.
+
+\Sval
+\Sitem{ } \tsl{arcorr} returns a list containing the following 
+three items:
+\Sitem{var} Real scalar containing the variance of the process.
+\Sitem{corr} Array of length {\tsl{m}} containing the 
+autocorrelations.
+\Sitem{ier} Integer variable indicating whether or not the AR 
+process is stationary (0 means yes, anything else means no).
+%
+%
+\Shead{ardt}{Simulate Data from an AR Process}
+
+\Scall{ardt(alpha,rvar,n,seed=0)}
+
+\Sarg
+\Sitem{alpha} Array of length $p$ containing AR coefficients 
+$\Valpha$.
+\Sitem{rvar} Real scalar containing error variance $\sigma^2(>0)$.
+\Sitem{n} Integer $(>{\tsl{p}})$ containing the length of the
+realization.
+\Sitem{seed} Real scalar containing the seed for the random
+number generator.
+
+\Sval
+\Sitem{ } \tsl{ardt} returns a list containing the following 
+two items:
+\Sitem{ier} Integer variable indicating whether or not the AR
+process is stationary (0 means yes, anything else means no).
+\Sitem{x} Array of length {\tsl{n}} containing the realization.
+%
+%
+\Shead{arfilt}{Apply an AR Filter to a Matrix}
+
+\Scall{arfilt(alpha,rvar,x)}
+
+\Sarg
+\Sitem{alpha} Array containing AR coefficients $\Valpha$.
+\Sitem{rvar} Real scalar containing error variance $\sigma^2(>0)$.
+\Sitem{x} Array containing the matrix to be filtered.
+
+\Sval
+\Sitem{ } \tsl{arfilt} returns a list containing the following 
+two items:
+\Sitem{w} Matrix containing the filtered version of {\tsl{x}}.
+\Sitem{ier} Integer variable indicating whether or not the AR
+process is stationary (0 means yes, j $(>0)$ means j$^{th}$ 
+partial outside $(-1,1)$).
+%
+%
+\Shead{arma}{Form Plots Illustrating Patterns in ARMA Processes}
+
+\Scall{arma(alpha,beta,x,iopt,p,q,rvar,n,m,seed=0)}
+
+\Sarg
+\Sitem{alpha} Array of length {\tsl{p}} containing AR coefficients 
+$\Valpha$.
+\Sitem{beta} Array of length {\tsl{q}} containing MA coefficients 
+$\Vbeta$.
+\Sitem{x} An ARMA process.
+\Sitem{iopt} Integer indicating which part of the ARMA
+process is to be simulated.  ${\tt{iopt}=0}$ means to use input
+alpha, beta and x,  ${\tt{iopt}=1}$ means to use input alpha
+and beta and simulate x, and ${\tt{iopt}=2}$ means to simulate
+alpha, beta and x.
+\Sitem{p} Integer containing order $p$ of the array $\Valpha$.
+\Sitem{q} Integer containing order $q$ of the array $\Vbeta$.
+\Sitem{rvar} Real scalar containing error variance $\sigma^2(>0)$.
+\Sitem{n} Length of the realization.
+\Sitem{m} Number of autocorrelations to be calculated.
+\Sitem{seed} Real scalar containing the seed for the random
+number generator.
+
+\Sval
+\Sitem{ } \tsl{arma} returns plots illustrating patterns in ARMA 
+processes and a list containing the following three items:
+\Sitem{alpha} Array containing the AR coefficients.
+\Sitem{beta} Array containing the MA coefficients.
+\Sitem{x} The realization.
+%
+%
+\Shead{armacorr}{Calculate ARMA Autocorrelation Function}
+
+\Scall{armacorr(alpha,beta,rvar=1,m)}
+
+\Sarg
+\Sitem{alpha} Array of length $p$ containing AR coefficients 
+$\Valpha$.
+\Sitem{beta} Array of length $q$ containing MA coefficients 
+$\Vbeta$.
+\Sitem{rvar} Real scalar containing error variance $\sigma^2(>0)$.
+\Sitem{m} Integer $(\ge\max(p,q))$ containing the number
+of autocorrelations to calculate.
+
+\Sval
+\Sitem{ } \tsl{armacorr} returns a list containing the following 
+three items:
+\Sitem{var} Real scalar containing variance of process.
+\Sitem{corr} Array of length {\tsl{m}} containing autocorrelations
+$\rho(1), \ldots, \rho(m)$
+\Sitem{ier} Integer variable indicating whether or not the ARMA
+process is stationary (0 means yes, anything else means no).
+%
+%
+\Shead{armadt}{Simulate Data from an ARMA Process}
+
+\Scall{armadt(alpha,beta,rvar,n,seed=0)}
+
+\Sarg
+\Sitem{alpha} Array of length $p$ containing AR coefficients 
+$\Valpha$.
+\Sitem{beta} Array of length $q$ containing MA coefficients 
+$\Vbeta$.
+\Sitem{rvar} Real scalar containing error variance $\sigma^2(>0)$.
+\Sitem{n} Integer $(>\max(p,q))$ containing the length of
+the realization.
+\Sitem{seed} Real scalar containing the seed for the random
+number generator.
+
+\Sval
+\Sitem{ } \tsl{armadt} returns a list containing the two elements:
+\Sitem{x} Array of length {\tsl{n}} containing the realization.
+\Sitem{ier} Integer variable indicating whether or not the ARMA
+process is stationary (0 means yes, anything else means no).
+%
+%
+\Shead{armapart}{Calculate ARMA Partial Autocorrelation Function}
+
+\Scall{armapart(alpha,beta,rvar,m)}
+
+\Sarg
+\Sitem{alpha} Array containing AR coefficients $\Valpha$.
+\Sitem{beta} Array containing MA coefficients $\Vbeta$.
+\Sitem{rvar} Real scalar containing error variance $\sigma^2(>0)$.
+\Sitem{m} Integer indicating the number of partial autocorrelations 
+to calculate.
+
+\Sval
+\Sitem{ } \tsl{armapart} returns a list containing the following 
+two elements:
+\Sitem{theta}  Array of length {\tsl{m}} containing the partial 
+autocorrelations.
+\Sitem{ier} Integer variable indicating whether or not the ARMA
+process is stationary (0 means yes, anything else means no)..
+%
+%
+\Shead{armapred}{Calculate Exact Predictions for an ARMA Process}
+
+\Scall{armapred(x,alpha,beta,rvar,t1,t2,h1,h2)}
+
+\Sarg
+\Sitem{x} Array of length $n$ containing the realization to be
+used in the prediction.
+\Sitem{alpha} Array containing AR coefficients $\Valpha$.
+\Sitem{beta} Array containing MA coefficients $\Vbeta$.
+\Sitem{rvar} Real scalar containing error variance $\sigma^2(>0)$.
+\Sitem{t1,t2} Integers $(1\le{\tt{t1}}\le{\tt{t2}}\le n)$
+specifying the range of memories to be used.
+\Sitem{h1,h2} Integers $(1\le{\tt{h1}}\le{\tt{h2}})$ specifying
+the horizons to be used.
+
+\Sval
+\Sitem{ } \tsl{armapred} returns a list containing the following
+elements:
+\Sitem{xp} Array of length $({\tt{t2}}-{\tt{t1}}+1)({\tt{h2}}-
+{\tt{h1}}+1)$ containing predictors.
+\Sitem{se} Real scalar containing the prediction standard errors
+for the predictors in the array {\tsl{xp}}.
+%
+%
+\Shead{armasp}{Calculate ARMA Spectral Density Function}
+
+\Scall{armasp(alpha,beta,rvar=1,Q=256)}
+
+\Sarg
+\Sitem{alpha} Array of length $p$ containing AR coefficients $\Valpha$.
+\Sitem{beta} Array of length $q$ containing MA coefficients $\Vbeta$.
+\Sitem{rvar} Real scalar containing error variance $\sigma^2(>0)$.
+\Sitem{Q} Integer $(\ge\max(p,q))$ containing the number of
+frequencies between 0 and 1 at which to calculate the spectral
+density.
+
+\Sval
+\Sitem{ } \tsl{armasp} returns an array {\tsl{f}} of length 
+$m=[{\tt{Q}}/2]+1$ containing the values of the spectral density 
+at the frequencies $(j-1)/{\tt{Q}},j=1,\ldots,m$.
+%
+%
+\Shead{arpart}{Calculate AR Partial Autocorrelation Function}
+
+\Scall{arpart(alpha)}
+
+\Sarg
+\Sitem{alpha} Array of length $p$ containing AR coefficients $\Valpha$.
+
+\Sval
+\Sitem{ } \tsl{arpart} returns a list containing the following 
+two elements:
+\Sitem{theta} Array of length $p$ containing partial autocorrelations.
+\Sitem{ier} Integer variable indicating whether the zeros of the
+characteristic polynomial corresponding to {\tsl{alpha}} are all
+outside the unit circle (0 means they are, anything else means
+they are not.)
+%
+%
+\Shead{arsp}{Calculate AR Spectral Density}
+
+\Scall{arsp(alpha,rvar=1,Q=256)}
+
+\Sarg
+\Sitem{alpha} Array of length $p$ containing AR coefficients $\Valpha$.
+\Sitem{rvar} Real scalar containing error variance $\sigma^2(>0)$.
+\Sitem{Q} Integer $(>{\tsl{p}})$ containing the number of
+frequencies between 0 and 1 at which to calculate the spectral
+density. 
+
+\Sval
+\Sitem{ } \tsl{arsp} returns the array {\tsl{f}} of length 
+$m=[{\tt{Q}}/2]+1$ containing the values of the spectral density at the 
+frequencies $(j-1)/{\tt{Q}},j=1,\ldots,m$.
+%
+%
+\Shead{arsppeak}{Find Peak Frequencies in AR Spectra}
+
+\Scall{arsppeak(alpha,rvar,n,start=0)}
+
+\Sarg
+\Sval
+\Sitem{alpha} Array of length {\tsl{p}} containing AR coefficients
+$\Valpha$.
+\Sitem{rvar} Real scalar containing error variance $\sigma^2(>0)$.
+\Sitem{n}  If {\tsl{ARSPPEAK}} is being used for estimation purposes, 
+{\tsl{n}} is an integer containing the length of the realization that 
+was used to estimate the parameters of the process.  If the
+parameters are the true values, let ${\tsl{n}}=1$.
+\Sitem{start} An optional argument that is a real scalar
+containing a starting value $(0<{\tt{start}}<.5)$ for the
+maximum finding procedure. 
+
+\Sval
+\Sitem{ } \tsl{arsppeak} returns a list containing the following 
+three items:
+\Sitem{ier} An integer indicating whether or not ARSPPEAK was
+successful in finding a peak.  The possible values of
+{\tsl{ier}} are:
+\Sitem{ } 0 ~~ ARSPPEAK was successful in finding a peak.
+\Sitem{ } 1 ~~ ARSPPEAK judged that the AR spectral density
+has no relative maxima.
+\Sitem{ } 2 ~~ A zero second derivative was encountered.
+\Sitem{ } 3 ~~ The maximum finder converged to frequency 0
+or 0.5.
+\Sitem{ } 4 ~~ The maximum finder didn't converge.
+\Sitem{peakf} If ${\tt{ier}}=0$, the peak frequency.
+\Sitem{se} If ${\tt{ier}}=0$, the standard error of the peak
+frequency estimator.
+%
+%
+\Shead{clip}{Clip a Vector Above and Below}
+
+\Scall{clip(x,low=-1.e20,up=1e.20)}
+
+\Sarg
+\Sitem{x} A vector.
+\Sitem{low} The value that will replace any element of {\tsl{x}} that is
+less than {\tsl{low}}.
+\Sitem{up} The value that will replace any element of {\tsl{x}} that is 
+greater than {\tsl{up}}.
+
+\Sval
+\Sitem{x} The original {\tsl{x}} with any element less that {\tsl{low}} 
+replaced by {\tsl{low}} and any element greater than {\tsl{up}} replaced 
+by {\tsl{up}}.
+%
+%
+\Shead{coeffcsd}{Calculate Asymptotic Standard Errors of ARMA MLE's}
+
+\Scall{coeffcsd(alpha,beta,n)}
+
+\Sarg
+\Sitem{alpha} Array of length $p$ containing AR coefficients $\Valpha$.
+\Sitem{beta} Array of length $q$ containing MA coefficients $\Vbeta$.
+\Sitem{n} Integer containing the sample size of process. 
+
+\Sval
+\Sitem{ } \tsl{coeffcsd} returns the array containing the 
+asymptotic standard deviations of the coefficients if {\tsl{ier}}, the 
+error indicator, returns a value of 0, indicating a nonsingular matrix.
+%
+\Shead{corrar}{Calculate AR Parameters from Autocorrelations}
+
+\Scall{corrar(rho,R0,p)}
+
+\Sarg
+\Sitem{rho} Array of length {\tsl{p}} containing autocorrelations.
+\Sitem{R0} Real scalar containing sample variance $(>0)$.
+\Sitem{p} Integer containing the AR order $(>0)$.
+
+\Sval 
+\Sitem{ }\tsl{corrar} returns a list containing the following 
+two elements:
+\Sitem{rvar} Real scalar variable containing error variance.
+\Sitem{alpha} Array of length {\tsl{p}} containing AR coefficients.
+%
+%
+\Shead{corrarma}{Calculate ARMA Parameters from Autocorrelations}
+
+\Scall{corrarma(rho,r0,p,q,maxit=100,del=1.e-5)}
+
+\Sarg
+\Sitem{rho} Array of length ${\tt{p}}+{\tt{q}}$ containing the 
+autocorrelations of the process.
+\Sitem{r0} Real scalar containing the variance of the process $(>0)$.
+\Sitem{p} Integer containing AR order $p(>0)$.
+\Sitem{q} Integer containing MA order $q(>0)$.
+\Sitem{maxit} Integer containing the maximum number of iterations to allow
+in Wilson's algorithm.
+\Sitem{del} Real scalar containing convergence criterion $(>0)$.
+
+\Sval
+\Sitem{ } \tsl{corrarma} returns a list containing the following items:
+\Sitem{alpha} Array of length {\tsl{p}} containing AR coefficients.
+\Sitem{beta} Array of length {\tsl{q}} containing MA coefficients.
+\Sitem{rvar} Real scalar containing the error variance $\sigma^2$.
+\Sitem{ier} Integer variable containing an error/convergence indicator.  The
+following values are possible:
+\Sitem{ } 0 ~~ {\tsl{CORRARMA}} successfully found the ARMA parameters.
+\Sitem{ } 1 ~~ A singular matrix was encountered trying to find AR 
+parameters.
+\Sitem{ } 2 ~~ Wilson's algorithm for finding the MA parameters didn't 
+converge.
+%
+%
+\Shead{corrdt}{Simulate Data Having Specified Autocorrelations}
+
+\Scall{corrdt(rho,r0,n,seed=0)}
+
+\Sarg
+\Sitem{rho} Array containing autocorrelations..
+\Sitem{r0} Real scalar containing the variance of the process $(>0)$.
+\Sitem{n} Length of the desired realization.
+\Sitem{seed} Real scalar containing the seed for the random number generator.
+
+\Sval
+\Sitem{ } \tsl{corrdt} returns a realization of length {\tsl{n}} from a
+Gaussion process having variance {\tsl{ro}} and autocorrelations {\tsl{rho}}.
+%
+%
+\Shead{corrma}{Calculate MA Parameters from Autocorrelations}
+
+\Scall{corrma(rho,r0,q,maxit=100,del=1.e-5)}
+
+\Sarg
+\Sitem{rho} Array of length {\tsl{q}} containing autocorrelations of 
+lags ${\tt{1}},\ldots,{\tt{q}}$.
+\Sitem{r0} Real scalar containing the variance of the MA process.
+\Sitem{q} Integer containing order $q(>0)$.
+\Sitem{maxit} Integer containing the maximum number of iterations to use
+in Wilson's algorithm $(>0)$.
+\Sitem{del} Real scalar containing the convergence criterion to use in
+Wilson's algorithm $(>0)$.
+
+\Sval
+\Sitem{ } \tsl{corrma} returns a list containing the following 
+three items:
+\Sitem{beta} Array of length {\tsl{q}} containing MA coefficients.
+\Sitem{rvar} Real scalar containing the error variance $\sigma^2$ 
+of the MA process.
+\Sitem{ier} Integer variable indicating whether or not Wilson's 
+algorithm converged (0 means yes, 1 means no).
+%
+%
+\Shead{crlag}{Apply the Circular Shift Operator to a Vector}
+
+\Scall{crlag(x)}
+
+\Sarg
+\Sitem{x} An array.
+
+\Sval
+\Sitem{ } \tsl{crlag} returns the array that results from applying 
+the circular shift operator to the original array.
+%
+%
+\Shead{delay}{Make S Pause for a Specified Time}
+
+\Scall{delay(seconds)}
+
+\Sarg
+\Sitem{seconds} The specified amount of time for the delay.
+
+\Sval
+\Sitem{ } \tsl{delay} causes S to pause for the specified time {\tsl{seconds}}.
+%
+%
+\Shead{diffeq}{Find Future Values of a Difference Equation}
+
+\Scall{diffeq(alpha,p,n,e)}
+
+\Sarg
+\Sitem{alpha} Array of length {\tsl{p}} containing AR coefficients $\Valpha$.
+\Sitem{p} Integer containing order $p(>0)$.
+\Sitem{n} Integer $(>{\tt{p}})$ containing the length of the realization.
+\Sitem{e} Array of length {\tsl{n}} containing the values for the
+general difference equation.
+
+\Sval
+\Sitem{x} Array of length {\tsl{n}} containing the realization.
+%
+%
+\Shead{divpoly}{Divide Two Polynomials}
+
+\Scall{divpoly(num,den,n)}
+
+\Sarg
+\Sitem{num} Array containing coefficients of the numerator polynomial whose 
+zeroth coefficient is one.
+\Sitem{den} Array containing coefficients of the denominator polynomial
+with zeroth coefficient equal to one.
+\Sitem{n} Integer containing the order of resulting polynomial. 
+
+\Sval
+\Sitem{ } \tsl{divpoly} returns the array {\tsl{ratio}} of length {\tsl{n}} 
+containing the coefficients of the polynomial that results from the 
+division the original two polynomials.
+%
+%
+\Shead{dot}{Calculate Inner Product of Two Vectors}
+
+\Scall{dot(x,y)}
+
+\Sarg
+\Sitem{x} A vector.
+\Sitem{y} A vector.
+
+\Sval
+\Sitem{ } \tsl{dot} returns the inner product of the two vectors {\tsl{x}} 
+and {\tsl{y}}.
+%
+%
+\Shead{dtarma}{Calculate Exact ARMA MLE's}
+C
+\Scall{dtarma(x,alpha,beta,maxit=200,eps=.0001)}
+
+\Sarg
+\Sitem{x} Array containing the data to be used in the estimation 
+of the procedure.
+\Sitem{alpha} Array containing the starting value for the AR 
+coefficients.
+\Sitem{beta} Array containing the starting value for the MA 
+coefficients.
+\Sitem{maxit} Integer $(1\le{\tt{maxit}}\le 500)$ containing 
+the maximum number of iterations in the optimization procedure.
+\Sitem{eps} Real scalar containing the convergence criterion.
+
+\Sval
+\Sitem{ } \tsl{dtarma} returns a list containing the following 
+six items:
+\Sitem{ier} Integer variable containing termination information 
+(0 means convergence, $>1$ means some convergence error.)
+\Sitem{alpha} Array containing the values of the AR coefficients at 
+termination. 
+\Sitem{beta} Array containing the values of the MA coefficients at 
+termination.
+\Sitem{rvar} Real scalar variable containing the value of the error 
+variance at termination.
+\Sitem{m2ll} Real scalar variable containing the value of $-2$ times
+the log likelihood evaluated at the output values of the parameters.
+\Sitem{var} Real scalar containing a measure of degree of convergence 
+at termination.
+%
+%
+\Shead{filt}{Apply a Linear Filter to a Vector}
+
+\Scall{filt(beta,beta0,x)}
+
+\Sarg
+\Sitem{beta} Array of length $p$ containing coefficients of lags 
+$1,\ldots,p$.
+\Sitem{beta0} Real scalar containing the coefficient for lag 0.
+\Sitem{x} Array of length $n$ containing the data to be filtered.
+
+\Sval
+\Sitem{ } \tsl{filt} returns an array of length $n-p$ 
+containing the result of the filter. 
+%
+%
+\Shead{freqs}{Form Vector of Natural (Nyquist) Frequencies}
+
+\Scall{freqs(n)}
+
+\Sarg
+\Sitem{n} Integer indicating the number of desired frequencies.
+
+\Sval
+\Sitem{ } \tsl{freqs} returns an array of length {\tsl{n}} of 
+frequencies all contained in the interval [0,0.5].
+%
+%
+\Shead{infqnt}{Plot Informative Quantile Function of a Data Set}
+
+\Scall{infqnt(x)}
+
+\Sarg
+\Sitem{x} Array of length $n$ containing the data.
+
+\Sval
+\Sitem{ } \tsl{infqnt} returns a plot of the informative quantile 
+function for the data set {\tsl{x}}.
+%
+%
+\Shead{madt}{Simulate Data from an MA Process}
+
+\Scall{madt(beta,rvar,n,seed=0)}
+
+\Sarg
+\Sitem{beta} Array of length $q$ containing the MA coefficients $\Vbeta$.
+\Sitem{rvar} Real scalar containing the error variance $\sigma^2(>0)$.
+\Sitem{n} Integer $(>q)$ containing the desired number of observations.
+
+\Sval
+\Sitem{ } \tsl{madt} returns an array {\tsl{x}} of length {\tsl{n}} 
+containing the realization.
+%
+%
+\Shead{masmooth}{Apply Moving Average Smoother to a Vector (S Version)}
+
+\Scall{masmooth(x,k)}
+
+\Sarg
+\Sitem{x} Array containing the data.
+\Sitem{k} Length of the moving average smoother.
+
+\Sval
+\Sitem{ } \tsl{masmooth} returns the resulting smoothed array 
+{\tsl{z}}.
+%
+%
+\Shead{macorr}{Calculate MA Autocorrelation Function}
+
+
+\Scall{macorr(beta,rvar=1,m)}
+
+\Sarg
+\Sitem{beta} Array containing MA coefficients $\Vbeta$.
+\Sitem{rvar} Real scalar containing error variance $(>0)$.
+\Sitem{m} Integer containing the number of autocorrelations to 
+calculate $(>0)$.
+
+\Sval
+\Sitem{ } \tsl{macorr} returns a list containing the following 
+four items:
+\Sitem{var} Real scalar containing the variance of the process.
+\Sitem{corr} Array of length {\tsl{m}} containing the 
+autocorrelations.
+\Sitem{ier} Integer variable indicating whether or not the MA 
+process is stationary (0 means yes, anything else means no).
+%
+%
+\Shead{masp}{Calculate MA Spectral Density Function}
+
+\Scall{masp(beta,rvar=1,Q=256)}
+
+\Sarg
+\Sitem{beta} Array of length $q$ containing coefficients $\Vbeta$.
+\Sitem{rvar} Real scalar containing error variance $\sigma^2(>0)$.
+\Sitem{Q} Integer $(>q)$ containing the number of frequencies between 0
+and 1 at which to calculate the spectral density. 
+
+\Sval
+\Sitem{ } \tsl{masp} returns the array {\tsl{f}} of length 
+$m = [{\tt{Q}}/2]+1$ containing the MA spectra at frequencies 
+$(j-1)/{\tt{Q}},j=1\ldots,m$. 
+%
+%
+\Shead{movave}{Apply Moving Average Smoother to a Vector (Fortran Version)}
+
+\Scall{movave(x,k)}
+
+\Sarg
+\Sitem{x} Array containing the data.
+\Sitem{k} Length of the moving average smoother.
+
+\Sval
+\Sitem{ } \tsl{movave} returns the resulting smoothed array {\tsl{z}}.
+%
+%
+\Shead{movbox}{Form Quantities Needed for Moving Box Plot}
+
+\Scall{movbox(x,k)}
+
+\Sarg
+\Sitem{x} Array of length $n$ containing the data.
+\Sitem{k} Integer indicating the length of the moving average smoother.
+
+\Sval
+\Sitem{ } \tsl{movbox} returns a list containing the following 
+three objects:
+\Sitem{summ} Matrix ($n\times 5$) with columns defined as follows:
+\Sitem{ } Column 1 is largest value in $[u4, u4 + 1.5*IQR]$,
+          or $u4$ if none,
+\Sitem{ } Column 2 is the upper fourth (median of largest 
+          ({\tsl{n}}+1)/2),
+\Sitem{ } Column 3 is the median,
+\Sitem{ } Column 4 is lower fourth (median of smallest
+          ({\tsl{n}}+1)/2),
+\Sitem{ } Column 5 is smallest value in $[l4, l4 - 1,5*IQR]$,
+          or $l4$ if none,
+\Sitem{ } where $IQR$ is the interquartile range.
+\Sitem{inds} Integer array of indices.
+\Sitem{outs} Real array containing values corresponding to {\tsl{inds}} 
+that fall outside $[l4 - 1.5*IQR, u4 + 1.5*IQR]$. 
+%
+%
+\Shead{movord}{Apply Moving Order Statistic Operator to a Vector}
+
+\Scall{movord(x,nord,k)}
+
+\Sarg
+\Sitem{x} Array of length $n$ containing the data.
+\Sitem{nord} Order of moving order statistic desired.
+\Sitem{k} Length of moving average smoother.
+
+\Sval
+\Sitem{ } \tsl{movord} returns the array of moving order 
+statistics.
+%
+%
+\Shead{multpoly}{Multiply Two Polynomials}
+
+\Scall{multpoly(alpha,beta)}
+
+\Sarg
+\Sitem{alpha} Array of length $p$ containing the coefficients of the first 
+polynomial.
+\Sitem{beta} Array of length $q$ containing the coefficients of the second 
+polynomial.
+
+\Sval
+\Sitem{ } \tsl{multpoly} returns an array of length $p+q$ 
+containing the coefficients of the product of the polynomials.
+%
+%
+\Shead{odot}{Form Outer Product of Two Vectors}
+
+\Scall{odot(x,y)}
+
+\Sarg
+\Sitem{x} A vector.
+\Sitem{y} A vector.
+
+\Sval
+\Sitem{ } \tsl{odot} returns an $n\times n$ matrix that is the outer product
+of the vectors {\tsl{x}} and {\tsl{y}}.
+%
+%
+\Shead{pacf}{Calculate Sample Partial Autocorrelation Function}
+
+\Scall{pacf(x,m)}
+
+\Sarg
+\Sitem{x} Array of length $n$ containing the data.
+\Sitem{m} Integer $(0<{\tsl{m}}<n)$ containing the number of partial 
+autocorrelations to find.
+
+\Sval
+\Sitem{ } \tsl{pacf} returns an array of length {\tsl{m}} 
+containing the partial autocorrelations.
+%
+%
+\Shead{partar}{Calculate AR Coefficients from Autocorrelations}
+
+\Scall{partar(theta)}
+
+\Sarg
+\Sitem{theta} Array of length $p$ containing partial autocorrelations.
+
+\Sval
+\Sitem{ } \tsl{partar} returns an array of length $p$ containing 
+AR coefficients.
+%
+%
+\Shead{perdgm}{Calculate Periodogram of a Time Series}
+
+\Scall{perdgm(x)}
+
+\Sarg
+\Sitem{x} Array of length $n$ containing the data.
+
+\Sval
+\Sitem{ } \tsl{perdgm} returns the periodogram of {\tsl{x}} at 
+the frequencies $j/n,j=0,1,\ldots,[n/2]$.
+%
+%
+\Shead{plotsp}{Form Plot of a (True or Sample) Spectral Density}
+
+\Scall{plotsp(f,n,div,main=``Log Std Spectra'')}
+
+\Sarg
+\Sitem{f} Array of length $m=[{\tt{n}}/2]+1$ containing some spectral 
+quantity the frequencies $(j-1)/{\tt{n}},j=1,\ldots,m$.
+\Sitem{n} Integer containing the length of the array {\tsl{f}}.
+\Sitem{div} Real scalar containing divisor of the array {\tsl{f}}.
+\Sitem{main} Main title of the resulting plot.
+
+\Sval
+\Sitem{ } \tsl{plotsp} produces a plot of $\log{({\tt{f}}(j)/{\tt{div}})}$
+versus $(j-1)/{\tt{n}}$ for $j=1,\ldots,[{\tt{n}}/2]+1$ with vertical 
+scale running from $-6$ to 6.
+%
+%
+\Shead{poly}{Evaluate a Polynomial at a Vector of Points}
+
+\Scall{poly(coeffs,x)}
+
+\Sarg
+\Sitem{coeffs} Array of length $p+1$ containing the coefficients of the 
+polynomial of degree $p$, ({\tsl{coeffs}}(i) is the coefficient of power
+$i-1$).
+\Sitem{x} Array containing the points at which to evaluate the polynomial.
+
+\Sval
+\Sitem{ } \tsl{poly} returns an array containing the values 
+of the polynomial.
+%
+%
+\Shead{polyrt}{Find the Roots of a Polynomial Given its Coefficients}
+
+\Scall{polyrt(coeffs,m=100,eps=1.e-6)}
+
+\Sarg
+\Sitem{coeffs} Array of length $p+1$ containing the coefficients of the
+polynomial of degree $p$, ({\tsl{coeffs}}(i) is the coefficient of power
+$i-1$).
+\Sitem{m} Integer containing the maximum number of iterations in the
+procedure.
+\Sitem{eps} Real scalar indicating the convergence criterion.
+
+\Sval
+\Sitem{ } \tsl{polyrt} returns a list containing the following 
+items:
+\Sitem{real} Array of length $p$ containing the real parts of the roots.
+\Sitem{imag} Array of length $p$ containing the imaginary parts of the
+roots.
+\Sitem{ier} Integer variable indicating whether or not the procedure
+converged (0 means yes, 1 means no).
+%
+%
+\Shead{rtpoly}{Find the Coefficients of a Polynomial Given its Roots}
+
+\Scall{rtpoly(roots)}
+
+\Sarg
+\Sitem{roots} Array of length $p$ containing the zeros of the polynomial.
+
+\Sval
+\Sitem{ } \tsl{rtpoly} returns an array of length $p$ 
+containing the coefficients of the polynomial with the given roots.
+%
+%
+\Shead{rw}{Simulate Data from a Random Walk Process}
+
+\Scall{rw(n,seed=0)}
+
+\Sarg
+\Sitem{n} Integer containing the length of the desired realization.
+\Sitem{seed} Real scalar containing the seed for the random number generator.
+
+\Sval
+\Sitem{ } \tsl{rw} returns an array of length {\tsl{n}} containing
+a realization of a Gaussian random walk.
+%
+%
+\Shead{schur}{Form the Schur Matrix Corresponding to AR Parameters}
+
+\Scall{schur(alpha)}
+
+\Sarg
+\Sitem{alpha} An array of length $p$ containing the AR coefficients 
+$\Valpha$.
+
+\Sval
+\Sitem{ } \tsl{schur} returns the Schur matrix for the AR coefficients.
+%
+%
+\Shead{seasest}{Calculate Box-Jenkins Estimates for a Seasonal ARIMA Model}
+
+\Scall{seasest(y,ords,coeffs,lags,back,maxit=50,eps=0.000001)}
+
+\Sarg
+\Sitem{y} Array of length $n$ containing the data.
+\Sitem{ords} An array of length 5 containing the full and subset AR 
+orders, followed by the full and subset MA orders, followed by a 1 if a 
+constant term is in the model or a 0 if it is not.
+\Sitem{coeffs} An array containing starting values for the coefficients 
+that are included in the model in the order full AR, subset AR, full MA, 
+subset MA and the mean of {\tsl{y}}.
+\Sitem{lags} An array containing the lags (if any) in the model.  If both 
+the subset AR and MA orders are zero, no array called {\tsl{lags}} need 
+be formed, but an argument must be included.
+\Sitem{back} An integer containing the number of back forecasts to used in 
+determining initial values in the recursion used in evaluating the sum of 
+squares of residuals functions $(\ge0)$.
+\Sitem{maxit} An integer containing the number of iterations to allow 
+in the estimation procedure.  If {\tsl{maxit}} is negative, then 
+--{\tsl{maxit}} iterations are allowed and the values of the coefficients 
+for the successive iterations are displayed on the screen.  If {\tsl{maxit}} 
+is 1 then {\tsl{SEASEST}} only evaluates {\tsl{rvar}} and {\tsl{sds}}.
+\Sitem{eps} Real scalar containing a convergence criterion.  If the 
+maximum value of successive iterates differs by less than {\tsl{eps}}, 
+then {\tsl{SEASEST}} judges that the algorithm has converged.
+
+\Sval
+\Sitem{ } \tsl{seasest} returns a list containing the following 
+five elements:
+\Sitem{coeffs} Array containing the final values reached for the parameters 
+in the iterative process.  {\tsl{coeffs}} is not changed from input if 
+{\tsl{maxit}}$=1$.
+\Sitem{e} Array of length $n$ containing the one step ahead prediction 
+errors corresponding to the $n$ values of {\tsl{x}}.
+\Sitem{ier} An integer variable indicating whether or not convergence was
+achieved (0 means yes, 1 means no), if a singular matrix was encountered 
+(2), or whether the algorithm could not continue even though convergence 
+was no reached (3 or 4).  If this final alternative happens, different 
+starting values or convergence criteria may lead to convergence.
+\Sitem{rv} Real scalar containing an estimate of the error variance.
+\Sitem{se} An array containing the standard errors of the estimates. 
+%
+%
+\Shead{seaspred}{Calculate Box-Jenkins Forecasts}
+
+\Scall{seaspred(x,ords,coeffs,lags,rvar,tf,tl,hl,conf)}
+
+\Sarg
+\Sitem{x} Array of length $n$ containing the data.
+\Sitem{ords} An array of length 8 containing the full and subset AR orders, 
+followed by the full and subset MA orders, followed by a 1 if a constant 
+term is in the model or a 0 if it is not, followed by the number of first 
+differences in the model, the number of $S$th differences in the model, and 
+finally the value of $S$.
+\Sitem{coeffs} Values for full AR, subset AR, full MA and subset MA 
+coefficients, followed by the constant if there is one and the values of $m$ 
+and $\lambda$ for the power transform.
+\Sitem{lags} Array containing the lags (if any) in the model.  If both the 
+subset AR and MA orders are zero, no array called {\tsl{lags}} need be formed, 
+but an argument must be included.
+\Sitem{rvar} Real scalar containing the value of noise variance.
+\Sitem{tf,tl} Integers containing the prediction origins to use.  The values 
+must be at least ${\rm{maxp}}+{\rm{maxq}}+1$ (maxp and maxq are the largest 
+AR and MA lags in the expanded version of the model) and at most $n$, and 
+{\tsl{tf}} must be less than or equal to {\tsl{tl}}.
+\Sitem{hl} Integer containing the maximum number of steps ahead to forecast 
+from each origin.
+\Sitem{conf} Real scalar containing the confidence level for the probability 
+limits to be placed on the forecasts $(0<{\tt{conf}}<1)$.
+
+\Sval
+\Sitem{ } \tsl{seaspred} returns a list containing the following 
+six items:
+\Sitem{xp} Array of length $({\tt{tl}}-{\tt{tf}}+1){\tt{hl}}$ containing 
+the forecasts.  The first {\tsl{hl}} elements are from origin {\tt{tf}}, 
+the next {\tsl{hl}} are from origin {\tsl{tf+1}}, etc.
+\Sitem{xpl} Array containing the lower probability limits on the corresponding 
+elements of {\tsl{xp}}.
+\Sitem{xpu} Array containing the upper probability limits on the corresponding
+elements of {\tsl{xp}}.
+\Sitem{ier} Integer variable indicating whether {\tsl{SEASPRED}} finished
+without error (0), or an illegal power transform was requested (1).
+\Sitem{check} ?*?*?*?*?*?.
+\Sitem{xx} ?*?*?*?*?*?.
+%
+%
+\Shead{simcfs}{Simulate Coefficients of a Polynomial with Zeros Outside
+Unit Circle}
+
+\Scall{simcfs(p,seed=0)}
+
+\Sarg
+\Sitem{p} Degree of desired polynomial.
+\Sitem{seed} Real scalar containing the seed for the random number generator.
+
+\Sval
+\Sitem{ } \tsl{simcfs} returns an array containing coefficients
+of a polynomial having all of its zeros greater than one in modulus.
+%
+%
+\Shead{stdf}{Standardize a Vector}
+
+\Scall{stdf(f,fac,a,b)}
+
+\Sarg
+\Sitem{f} A vector.
+\Sitem{fac} A nonzero real scalar to divide {\tsl{f}} by.
+\Sitem{a} Real scalar indicating lower limit allowed for standardized 
+${\tt{f}}/{\tt{fac}}$.
+\Sitem{b} Real scalar indicating upper limit allowed for standardized
+${\tt{f}}/{\tt{fac}}$. 
+
+\Sval
+\Sitem{ } \tsl{stdf} returns the standardized vector {\tsl{f}}.
+%
+%
+\Shead{swp}{Sweep a Matrix}
+
+\Scall{swp(a,k1,k2)}
+
+\Sarg
+\Sitem{a} The matrix to be swept.
+\Sitem{k1,k2} {\tsl{a}} is swept on the diagonals {\tsl{k1}} through 
+{\tsl{k2}}.
+
+\Sval
+\Sitem{ } \tsl{swp} returns a list containing the following two items:
+\Sitem{A} Matrix that results from sweeping {\tsl{a}}.
+\Sitem{ier} Integer variable containing an indicator of whether or not a zero 
+diagonal was encountered during the sweeping (0 means no, 1 means yes).
+%
+%
+\Shead{toepl}{Form Symmetric Toeplitz Matrix Given its First Row}
+
+\Scall{toepl(R,R0,M)}
+
+\Sarg
+\Sitem{R} Array of length ${\tt{n}}-1$ containing the second through 
+{\tsl{n}}th elements of the first row of the Toeplitz matrix.
+\Sitem{R0} Real scalar containing the value for the diagonal of the Toeplitz 
+matrix.
+\Sitem{M} Size of the resulting matrix.
+
+\Sval
+\Sitem{G} The desired Toeplitz matrix.
+%
+%
+\Shead{tsvar}{Calculate Sample Variance of a Time Series}
+
+\Scall{tsvar(x)}
+
+\Sarg
+\Sitem{x} A time series.
+
+\Sval
+\Sitem{ } \tsl{tsvar} returns the sample variance of the time series {\tsl{x}}.
+%
+%
+\Shead{windowf}{Calculate Nonparamteric Spectral Density Estimate}
+
+\Scall{windowf(rho,R0,Q,ioptw,M,n,alpha=0.05)}
+
+\Sarg
+\Sitem{rho} Array of length {\tsl{M}} (if {\tsl{ioptw}} is between 1 and 5) or 
+length ${\tt{n}}-1$ if {\tsl{ioptw}} is between 6 and 8 containing 
+autocorrelations.
+\Sitem{R0} Real scalar containing the sample variance $(>0)$.
+\Sitem{Q} Integer containing the number of frequencies between 0 
+and 1 at which to calculate spectra.
+\Sitem{ioptw} Integer containing the number of the window to be used in the 
+estimation procedure as indicated by the following:
+\Sitem{ }1 ~~ Truncated periodogram
+\Sitem{ }2 ~~ Bartlett
+\Sitem{ }3 ~~ Tukey
+\Sitem{ }4 ~~ Parzen
+\Sitem{ }5 ~~ Bohman
+\Sitem{ }6 ~~ Daniell
+\Sitem{ }7 ~~ Bartlett--Priestley
+\Sitem{ }8 ~~ Parzen--Cogburn--Davis
+\Sitem{M} Integer $(>0)$ containing scale parameter.
+\Sitem{n} (If either {\tsl{ioptw}} is between 6 and 8 or the factor for 
+determining confidence intervals is desired.) Integer containing the length 
+of the data set being analyzed.
+\Sitem{alpha} Real scalar ($0<${\tsl{alpha}}$<1$) indicating the level
+of confidence.
+
+\Sval
+\Sitem{ } \tsl{windowf} returns a list containing the following 
+two items:
+\Sitem{f} Array of length $[{\tt{Q}}/2]+1$ containing the spectral 
+estimator at the frequencies $(j-1)/{\tt{Q}},j=1,\ldots,[{\tt{Q}}/2]+1$.
+\Sitem{c} Real scalar variable that can be used to find 95\% confidence 
+intervals for the true spectral density.  The interval at the $i$th 
+frequency would be from {\tsl{f(i)/c}} to {\tsl{f(i)*c}}.
+%
+%
+\Shead{wn}{Simulate White Noise Data}
+
+\Scall{wn(seed,n,dist=1)}
+
+\Sarg
+\Sitem{seed} Real scalar containing the seed for the random number generator.
+\Sitem{n} Integer containing the length of the desired realization.
+\Sitem{dist} Integer containing the number of the distribution to use based
+on the following values:
+\Sitem{ }1 ~~ N(0,1)
+\Sitem{ }2 ~~ U(0,1)
+\Sitem{ }3 ~~ Unit exponential
+\Sitem{ }4 ~~ Logistic
+\Sitem{ }5 ~~ Standard Cauchy
+\Sitem{ }6 ~~ Extreme value
+\Sitem{ }7 ~~ Lognormal
+\Sitem{ }8 ~~ Double exponential
+
+\Sval
+\Sitem{ } \tsl{wn} returns a realization of white noise from the specified
+distribution.
+%
+%
+\Shead{wntest}{Form Plots for White Noise Test}
+
+\Scall{wntest(x,m,alpha=0.05)}
+
+\Sarg
+\Sitem{x} An array containing the realization to be tested.
+\Sitem{m} Integer containing the number of correlations.
+\Sitem{alpha} Real scalar ($0<${\tsl{alpha}}$<1$) indicating the 
+level of confidence at which the test is to be preformed.
+
+\Sval
+\Sitem{ } \tsl{wntest} returns plots of two white noise test for time series
+data.
+
+\vfil\eject
+
+\sechd{4. Tables of S Functions and Fortran Subprograms}
+
+\def\crlne{\cr\noalign{\vskip 2mm\hrule\vskip 2mm}}
+
+\sechd{Cross-References Between TIMESLAB Commands and S Functions}
+
+\tabskip=1em plus 2em minus .5em
+\halign to \hsize{{\ttone#}\hfil&{\ttone#}\hfil&#\hfil\cr
+\noalign{\hrule\vskip 2mm}
+TIMESLAB & S & Comment\cr
+\noalign{\vskip 2mm\hrule\vskip 2mm}
+abortoff& options(error=NULL) & See section 6.4.3 of {\it{The New S 
+Language}}\crlne
+aborton & NA & See section 6.4.3 of {\it{The New S Language}}\crlne
+abs & abs$^{*}$\crlne
+arcorr & arcorr$^{**}$\crlne
+arcorr2 & none\crlne
+ardt & ardt$^{**}$, diffeq$^{**}$ & \tsl{diffeq} is provided for 
+difference equations.\crlne
+arfilt & arfilt$^{**}$\crlne
+armacorr & armacorr$^{**}$\crlne
+armadt & armadt$^{**}$\crlne
+armapred & armapred$^{**}$\crlne
+armasel & none\crlne
+armasp & armasp$^{***}$\crlne
+arpart & arpart$^{**}$\crlne
+arsp & arsp$^{***}$\crlne
+arsp2 & none\crlne
+arspcb & none\crlne
+arsppeak & arsppeak$^{**}$\crlne
+barttest & none\crlne
+batchoff & NA & See section 3.4.8 of {\it{The New S Language}}\crlne
+batchon & S BATCH infile outfile & See section 3.4.8 of {\it{The New S
+Langauge}}\crlne
+binom & none\crlne
+clean & rm$^*$\crlne
+cls & !clear & Issue the Unix command \tsl{clear}.\crlne
+coeffcsd & coeffcsd$^{**}$\crlne
+color & NA\crlne
+corr & acf$^{***}$, acf1$^{***}$\cr
+     & perdgm$^{***}$, tsvar$^{***}$\crlne
+corr2 & none\crlne
+corrar & corrar$^{**}$\crlne
+corrar2 & none\crlne
+corrarma & corrarma$^{**}$\crlne
+corrma & corrma$^{**}$\crlne
+cos & cos$^*$\crlne
+crossp & none\crlne
+cum & cumsum$^*$\crlne
+cumsp & cumsum$^*$ & May be done by using {\tsl{cumsum}} on spectral 
+array\crlne
+delay & delay$^{***}$\crlne
+density & density$^*$\crlne
+diff & diff$^*$\crlne
+dist & & For example see Gamma, page 459, {\it{The
+New S Language}}\crlne
+divsds & none\crlne
+dos & unix$^*$\crlne
+dot & dot$^{***}$\crlne
+double & none\crlne
+dtar & dtar$^{**}$\crlne
+dtarma & dtarma$^{**}$\crlne
+dtfore & none\crlne
+echo & NA\crlne
+edit & NA\crlne
+eig & eigen\crlne
+end & & See sections 6.2.2 and 11.2.4 of {\it{The New S Language}}\crlne
+endif & & See sections 6.2.2 and 11.2.4 of  {\it{The New S Language}}\crlne
+erase & none\crlne
+exp & exp$^*$\crlne
+extend & none\crlne
+extract & Subscript & See page 598 of {\it{The New S Language}}\crlne
+fft & fft$^*$\crlne
+filt & filt$^{**}$\crlne
+goto & NA\crlne
+grmenu & NA\crlne
+gs & gr & Impliments Householder successive reflection procedure.\crlne
+help & help$^*$\crlne
+hist & hist$^*$\crlne
+if & if, ifelse &\crlne
+info & NA\crlne 
+infqnt & infqnt$^{***}$\crlne
+invpoly & divpoly$^{**}$\crlne
+label &  & See Chapters 4 and 10 of {\it{The New S Language}}\crlne
+length & length$^*$\crlne
+line & seq & $y <- m*{\tt{seq}}+b$, $m$ is the slope, $b$ is the 
+intercept\crlne
+list & list\crlne
+listm & list\crlne
+listsp & perdgm$^{***}$\crlne
+loge & log$^*$\crlne
+macorr & macorr$^{**}$\crlne
+macro & NA\crlne
+madt & madt$^{**}$\crlne
+masp & masp$^{***}$\crlne
+maxmin & max, min & The S commands are seperate commands.\crlne
+mchol & chol &\crlne
+mdel & Subscript & See page 598 of {\it{The New S Language}}\crlne
+minv & solve\crlne
+mmult & \%*\% & In S matrix multiplication is an operation. \crlne
+multpoly & multpoly$^{**}$\crlne
+notes & NA\crlne
+overoff & none\crlne
+overon & NA\crlne
+page & & See Chapters 4 and 10 of {\it{The New S Language}}\crlne
+parcorr & pacf$^{**}$\crlne
+partar & none\crlne
+pause & NA\crlne
+plot & plot\crlne
+plot2 & & See Chapters 4 and 10 of {\it{The New S Language}}\crlne
+plotcsp & plot & Used in combination with {\tsl{cumsum}} command\crlne
+plotk & & See Chapters 4 and 10 of {\it{The New S Language}}\crlne
+plotoff & NA\crlne
+ploton & NA\crlne
+plotsize & NA \crlne
+plotsp & plotsp &\crlne
+polar & none & See page 421 of {\it{The New S Language}}\crlne
+poly & poly$^{**}$\crlne
+polyroots & polyrt$^{**}$\crlne
+print & NA\crlne
+printer & & See Section 4.1 {\it{The New S Language}}\crlne
+printsel & & See Chapters 4 and 10 of {\it{The New S Language}} \crlne
+promptoff & NA\crlne
+prompton & browser\crlne
+psoff & NA\crlne
+pson & none\crlne
+qtest & none\crlne
+quit & q()\crlne
+read & scan\crlne
+record & sink$^*$\crlne
+reg & lsfit & \crlne
+replace & Subscript & See page 598 of {\it{The New S Language}}\crlne
+rescreen & gr.display\crlne
+restart & NA\crlne
+reverse & rev$^*$\crlne
+rootspoly & rtpoly$^{**}$\crlne
+save & dput $^*$, write$^*$\crlne
+savesc & & See section 10.2.2 of {\it{The New S Language}}\crlne
+seasest & seasest$^{**}$\crlne
+seaspred & seaspred$^{**}$\crlne
+sin & sin$^*$\crlne
+singleoff & NA\crlne
+singleon & none \crlne
+sort & sort$^*$\crlne
+speaker & NA\crlne	
+speakeroff & NA\crlne
+speakeron & NA\crlne
+submns & sabl & See page 574 of {\it{The New S Language}}\crlne
+sweep & swp$^{**}$ & The S function \tsl{sweep} does something else.\crlne
+textcolor & NA\crlne
+time & proc.time, unix.time & See Section 7.3.5 of {\it{The New S 
+Language}}\crlne
+toepl & toepl$^{***}$\crlne
+trans & t$^*$\crlne
+type2 & NA\crlne
+type4 & rbind, cbind&\crlne
+while & while & See sections 6.2.2 and 11.2.4 of {\it{The New S Language}} 
+\crlne 
+window & windowf$^{***}$ & The S function \tsl{window} does something else.
+\crlne
+wn & wn$^{***}$ &\cr
+\noalign{\vskip 2mm\hrule}}
+
+\vskip 2mm\noindent$^*$ New S function
+\vskip 2mm\noindent$^{**}$ S function written by Newton, Uses Fortran
+\vskip 2mm\noindent$^{***}$ S function written by Newton, Doesn't Use Fortran
+
+\sechd{Notes}
+
+\item{1.} 
+
+\vfil\eject
+
+\sechd{Other S Functions}
+
+\tabskip=1em plus 2em minus .5em
+\halign to \hsize{{\ttone#}\hfil&#\hfil\cr
+\noalign{\hrule\vskip 2mm}
+Name & Purpose\cr
+\noalign{\vskip 2mm\hrule\vskip 2mm}
+band & S version of BAND macro\cr
+chiplot & S version of CHIPLOT macro\cr
+fplot & S version of FPLOT macro\cr
+arma & Illustrate ARMA processes\cr
+armapart & Calcuate ARMA partial autocorrelation functions\cr
+clip & Clip a vector above and below\cr
+corrdt & Simulate data having specified autocorrelations\cr
+crlag & Apply circular shift operator\cr
+freqs & Form a vector of natural frequencies\cr
+masmooth & S version of SMOOTH macro\cr
+movave & Fortran version of SMOOTH macro\cr
+movbox & Form quantities needed for moving box plot\cr
+movord & Apply moving order statistics operator to a vector\cr
+odot & Form outer product of two vectors\cr
+rw & S version of RW macro\cr
+schur & Form Schur matrix corresponding to AR parameters\cr
+simcfs & S version of RANDCOEF macro\cr
+stdf & Standardize a vector\cr
+wntest & S version of WNTEST macro\cr}
+
+
+
+\vfil\eject
+
+\sechd{Fortran Subprograms}
+
+\tabskip=1em plus 2em minus .5em
+\halign to \hsize{{\ttone#}\hfil&{\ttone#}\hfil&#\hfil\cr
+\noalign{\hrule\vskip 2mm}
+Name & File & Purpose\cr
+\noalign{\vskip 2mm\hrule\vskip 2mm}
+arfilt & arfilt.f & Apply AR filter\cr
+arpart & arpart.f & Find partials from AR coefficients\cr
+arsppk & arsppk.f & Find peak frequency of AR process\cr
+       &          & and its standard error\cr
+corrar & corrar.f & Find AR parameters from correlations\cr
+cvmx1 & crarma.f & Find ARMA parameters from covariances\cr
+diffeq & diffeq.f & Perform a difference equation\cr
+dtarma & dtarma.f & Find ARMA MLE's\cr
+filt & filt.f & Filter an array\cr
+marq & seasest.f & Calculate Box-Jenkins estimates for\cr
+     &           & Seasonal ARIMA\cr
+median & median.f & Calculating medians\cr
+mmult & mmult.f & Multiply an (nxm) matrix times an\cr
+      &         & (mxk) matrix\cr
+movave & movord.f & Find moving averages\cr
+mxcsd & coeffsd.f & Find standard deviation of estimated\cr
+      &           & coefficients of ARMA process\cr
+mxpd & armapred.f & Find ARMA predictors\cr
+pacf & arsp.f & Find AR spectral density\cr
+pacf & pacf.f & Find sample partial autocorrelations\cr
+partar & partar.f & Find AR coefficients from partial\cr 
+       &          & autocorrelations\cr
+poly & poly.f &  Evaluate a polynomial at given values\cr
+rtpoly & roots1.f & Find coefficients of a polynomial\cr
+       &          & given its roots\cr
+schur & schur.f & Form Schur matrix for AR coefficients\cr 
+sspr & seaspred.f & Calculate Box-Jenkins forecasts\cr 
+swpk12 & swp.f & Sweep (nxn) matrix on diagonals k1\cr
+       &       & through k2\cr
+wilson & wilson.f & Find mx covariances\cr
+}
+
+
+\bye
+
+
+
+\bye
+
+
+

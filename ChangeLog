@@ -1,0 +1,14 @@
+1998-12-30  Bernd Wuebben  <wuebben@petit.cornell.edu>
+
+	* converted tex to Rd files.
+
+1998-12-29  Bernd Wuebben  <wuebben@petit.cornell.edu>
+
+	* single to double precision conversion of
+	  fortran routines
+
+1998-12-21  Bernd Wuebben  <wuebben@petit.cornell.edu>
+
+	* Initial release
+
+

@@ -1,0 +1,6 @@
+timeslab.c:	timeslab.f
+	f2c timeslab.f
+
+clean:
+	del timeslab.c
+

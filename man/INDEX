@@ -1,0 +1,56 @@
+acf               Calculate Sample Autocorrelation Function
+acf1              Calculate Sample Autocorrelation Function
+arcorr            Calculate AR Autocorrelation Function
+ardt              Simulate Data from an AR Process
+arfilt            Apply an AR Filter to a Matrix
+arma              Form Plots Illustrating Patterns in ARMA Processes
+armacorr          Calculate ARMA Autocorrelation Function
+armadt            Simulate Data from an ARMA Process
+armapart          Calculate ARMA Partial Autocorrelation Function
+armapred          Calculate Exact Predictions for an ARMA Process
+armasp            Calculate ARMA Spectral Density Function
+arpart            Calculate AR Partial Autocorrelation Function
+arsp              Calculate AR Spectral Density
+arsppeak          Find Peak Frequencies in AR Spectra
+clip              Clip a Vector Above and Below
+coeffcsd          Calculate Asymptotic Standard Errors of ARMA MLE's
+corrar            Calculate AR Parameters from Autocorrelations
+corrarma          Calculate ARMA Parameters from Autocorrelations
+corrdt            Simulate Data Having Specified Autocorrelations
+corrma            Calculate MA Parameters from Autocorrelations
+crlag             Apply the Circular Shift Operator to a Vector
+diffeq            Find Future Values of a Difference Equation
+divpoly           Divide Two Polynomials
+dot               Calculate Inner Product of Two Vectors
+dtarma            Calculate Exact ARMA MLE's
+filt              Apply a Linear Filter to a Vector
+freqs             Form Vector of Natural (Nyquist) Frequencies
+infqnt            Plot Informative Quantile Function of a Data Set
+macorr            Calculate MA Autocorrelation Function
+madt              Simulate Data from an MA Process
+masmooth          Apply Moving Average Smoother to a Vector (S Version)
+masp              Calculate MA Spectral Density Function
+movave            Apply Moving Average Smoother to a Vector (Fortran Version)
+movbox            Form Quantities Needed for Moving Box Plot
+movord            Apply Moving Order Statistic Operator to a Vector
+multpoly          Multiply Two Polynomials
+odot              Form Outer Product of Two Vectors
+pacf              Calculate Sample Partial Autocorrelation Function
+partar            Calculate AR Coefficients from Autocorrelations
+perdgm            Calculate Periodogram of a Time Series
+plotsp            Form Plot of a (True or Sample) Spectral Density
+polyrt            Find the Roots of a Polynomial Given its Coefficients
+rtpoly            Find the Coefficients of a Polynomial Given its Roots
+rw                Simulate Data from a Random Walk Process
+schur             Form the Schur Matrix Corresponding to AR Parameters
+seasest           Calculate Box-Jenkins Estimates for a Seasonal ARIMA Model
+seaspred          Calculate Box-Jenkins Forecasts
+simcfs            Simulate Coeff. of a Polynomial with Zeros Outside Unit Circle
+stdf              Standardize a Vector
+swp               Sweep a Matrix
+tlpoly            Evaluate a Polynomial at a Vector of Points
+toepl             Form Symmetric Toeplitz Matrix Given its First Row
+tsvar             Calculate Sample Variance of a Time Series
+windowf           Calculate Nonparamteric Spectral Density Estimate
+wn                Simulate White Noise Data
+wntest            Form Plots for White Noise Test
